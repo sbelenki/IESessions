@@ -1,0 +1,1727 @@
+
+[
+    uuid(39898EB0-DE1B-11d2-9FD6-00550076E06F),
+    version(1.0),
+    helpstring("VB Shell Library")
+]
+library VBShellLib
+{
+
+    importlib("stdole2.tlb");
+
+    //---------------------------------------------------------
+    // Forward declaration of interfaces
+    //---------------------------------------------------------
+    interface IContextMenu;
+    interface ICopyHookA;
+    interface ICopyHookW;
+    interface IDataObject;
+    interface IDeskband;
+    interface IDockingWindow;
+    interface IDockingWindowFrame;
+    interface IDockingWindowSite;
+    interface IDropTarget;
+    interface IEnumFORMATETC;
+    interface IEnumIDList;
+    interface IExtractIconA;
+    interface IExtractIconW;
+    interface IFileViewerA;
+    interface IFileViewerSite;
+    interface IFileViewerW;
+    interface IInputObject;
+    interface IMalloc;
+    interface IObjectWithSite;
+    interface IOleCommandTarget;
+    interface IOleWindow;
+    interface IPersist;
+    interface IPersistFile;
+    interface IPersistFolder;
+    interface IQueryInfo;
+    interface IServiceProvider;
+    interface IShellBrowser;
+    interface IShellExtInit;
+    interface IShellFolder;
+    interface IShellLinkA;
+    interface IShellLinkW;
+    interface IShellPropSheetExt;
+    interface IShellView;
+    interface IStream;
+    interface IUnknownVB;
+
+    //---------------------------------------------------------
+    // Types
+    //---------------------------------------------------------
+    typedef [public] long BOOL;
+    typedef [public] unsigned char BYTE;
+    typedef [public] long CLSID;
+    typedef [public] long COLORREF;
+    typedef [public] long DESKBANDINFO;
+    typedef [public] long DLGPROC;
+    typedef [public] long DWORD;
+    typedef [public] long HANDLE;
+    typedef [public] long HBITMAP;
+    typedef [public] long HGLOBAL;
+    typedef [public] long HICON;
+    typedef [public] long HINSTANCE;
+    typedef [public] long HKEY;
+    typedef [public] long HMENU;
+    typedef [public] long HOLEMENU;
+    typedef [public] long HWND;
+    typedef [public] double LARGE_INTEGER;
+    typedef [public] long LPBC;
+    typedef [public] long LPARAM;
+	typedef [public] long LPCBORDERWIDTHS;
+    typedef [public] long LPCFOLDERSETTINGS;
+    typedef [public] long LPCITEMIDLIST;
+    typedef [public] long LPCMINVOKECOMMANDINFO;
+    typedef [public] long LPCOLESTR;
+    typedef [public] long LPDESKBANDINFO;
+    typedef [public] long LPFNADDPROPSHEETPAGE;
+    typedef [public] long LPFNPSPCALLBACK;
+    typedef [public] long LPFOLDERSETTINGS;
+    typedef [public] long LPFORMATETC;
+    typedef [public] long LPGUID;
+    typedef [public] long LPITEMIDLIST;
+    typedef [public] long LPOLECMD;
+    typedef [public] long LPOLECMDTEXT;
+    typedef [public] long LPOLEMENUGROUPWIDTHS;
+    typedef [public] long LPOLESTR;
+    typedef [public] long LPPROPSHEETPAGE;
+    typedef [public] long LPRECT;
+    typedef [public] long LPSTRVB;
+    typedef [public] long LPTSTRVB;
+    typedef [public] long LPCSTRVB;
+    typedef [public] long LPCTSTRVB;
+    typedef [public] long LPFVSHOWINFO;
+    typedef [public] long LPMSG;
+    typedef [public] long LPWSTRVB;
+    typedef [public] long LPCWSTRVB;
+    typedef [public] long LPSHITEMID;
+    typedef [public] long LPSTGMEDIUM;
+    typedef [public] long LPSTREAM;
+    typedef [public] long LPSTRRET;
+    typedef [public] long LPTBBUTTON;
+    typedef [public] long LPTSTR;
+    typedef [public] long LPUNKNOWN;
+    typedef [public] long LPVARIANTARG;
+    typedef [public] long LPWIN32_FIND_DATA;
+    typedef [public] long LPVOID;
+    typedef [public] long LRESULT;
+    typedef [public] long REFGUID;
+    typedef [public] long REFIID;
+    typedef [public] long UINT;
+    typedef [public] double ULARGE_INTEGER;
+    typedef [public] long ULONG;
+    typedef [public] long VOID;
+    typedef [public] long WPARAM;
+    typedef [public] short WORD;
+
+
+    //---------------------------------------------------------
+    // C O M M O N  T Y P E S
+    //---------------------------------------------------------
+
+    //typedef struct {
+    //    DWORD data1;
+    //    short data2;
+    //    short data3;
+    //    BYTE  data4[8];
+    //} GUID;
+
+    typedef enum {
+        FCIDM_SHVIEWFIRST   = 0x0000,
+        FCIDM_SHVIEWLAST    = 0x7fff,
+        FCIDM_BROWSERFIRST  = 0xa000,
+        FCIDM_BROWSERLAST   = 0xbf00,
+        FCIDM_GLOBALFIRST   = 0x8000,
+        FCIDM_GLOBALLAST    = 0x9fff,
+    } FCIDM;
+
+    //#define FCIDM_GLOBALLAST 0x9fff
+    typedef enum {
+        FCIDM_MENU_FILE             = (0x9fff+0x0000),
+        FCIDM_MENU_EDIT             = (0x9fff+0x0040),
+        FCIDM_MENU_VIEW             = (0x9fff+0x0080),
+        FCIDM_MENU_VIEW_SEP_OPTIONS = (0x9fff+0x0081),
+        FCIDM_MENU_TOOLS            = (0x9fff+0x00c0),
+        FCIDM_MENU_TOOLS_SEP_GOTO   = (0x9fff+0x00c1),
+        FCIDM_MENU_HELP             = (0x9fff+0x0100),
+        FCIDM_MENU_FIND             = (0x9fff+0x0140),
+        FCIDM_MENU_EXPLORE          = (0x9fff+0x0150),
+        FCIDM_MENU_FAVORITES        = (0x9fff+0x0170),
+    } FCIDM_MENU;
+
+    typedef struct tagFILETIME {
+        DWORD  dwLowDateTime;
+        DWORD  dwHighDateTime;
+    } FILETIME;
+
+    typedef enum {
+        MK_LBUTTON = 0x0001,
+        MK_RBUTTON = 0x0002,
+        MK_SHIFT   = 0x0004,
+        MK_CONTROL = 0x0008,
+        MK_MBUTTON = 0x0010,
+        MK_ALT     = 0x0020
+    } KEYSTATES;
+
+    typedef enum {
+        MIIM_STATE       = 0x00000001,
+        MIIM_ID          = 0x00000002,
+        MIIM_SUBMENU     = 0x00000004,
+        MIIM_CHECKMARKS  = 0x00000008,
+        MIIM_TYPE        = 0x00000010,
+        MIIM_DATA        = 0x00000020,
+    } MIIM;
+
+    typedef struct {
+        UINT    cbSize;
+        MIIM    fMask;
+        UINT    fType;
+        UINT    fState;
+        UINT    wID;
+        HMENU   hSubMenu;
+        HBITMAP hbmpChecked;
+        HBITMAP hbmpUnchecked;
+        DWORD   dwItemData;
+        LPTSTR  dwTypeData;
+        UINT    cch;
+    } MENUITEMINFO;
+
+    typedef struct {
+        long width[6];
+    } OLEMENUGROUPWIDTHS;
+
+    typedef struct {
+        long x;
+        long y;
+    } POINT;
+
+    typedef [public] POINT POINTL;
+
+    typedef struct {
+        long left;
+        long top;
+        long right;
+        long bottom;
+    } RECT;
+
+    //---------------------------------------------------------
+    // I N T E R F A C E S
+    //---------------------------------------------------------
+
+
+
+    //---------------------------------------------------------
+    //
+    // IContextMenu
+    //
+    //---------------------------------------------------------
+    typedef enum {
+        CF_TEXT             = 1,
+        CF_BITMAP           = 2,
+        CF_METAFILEPICT     = 3,
+        CF_SYLK             = 4,
+        CF_DIF              = 5,
+        CF_TIFF             = 6,
+        CF_OEMTEXT          = 7,
+        CF_DIB              = 8,
+        CF_PALETTE          = 9,
+        CF_PENDATA          = 10,
+        CF_RIFF             = 11,
+        CF_WAVE             = 12,
+        CF_UNICODETEXT      = 13,
+        CF_ENHMETAFILE      = 14,
+        CF_HDROP            = 15,
+        CF_LOCALE           = 16,
+        CF_MAX              = 17,
+        CF_OWNERDISPLAY     = 0x0080,
+        CF_DSPTEXT          = 0x0081,
+        CF_DSPBITMAP        = 0x0082,
+        CF_DSPMETAFILEPICT  = 0x0083,
+        CF_DSPENHMETAFILE   = 0x008E
+    } CLIPFORMAT;
+
+    typedef struct {
+        DWORD    cbSize;
+        DWORD    fMask;
+        HWND     hwnd;
+        LPCSTRVB lpVerb;
+        LPCSTRVB lpParameters;
+        LPCSTRVB lpDirectory;
+        int      nShow;
+        DWORD    dwHotKey;
+        HANDLE   hIcon;
+    } CMINVOKECOMMANDINFO;
+
+    typedef enum {
+        DVASPECT_CONTENT    = 1,
+        DVASPECT_THUMBNAIL  = 2,
+        DVASPECT_ICON       = 4,
+        DVASPECT_DOCPRINT   = 8
+    } DVASPECT;
+
+    typedef enum {
+        GCS_VERBA     = 0x00000000,
+        GCS_HELPTEXTA = 0x00000001,
+        GCS_VALIDATEA = 0x00000002,
+        GCS_VERBW     = 0x00000004,
+        GCS_HELPTEXTW = 0x00000005,
+        GCS_VALIDATEW = 0x00000006,
+        GCS_UNICODE   = 0x00000004,
+    } GETCOMMANDSTRINGFLAGS;
+
+    typedef enum {
+        MF_INSERT           = 0x00000000,
+        MF_CHANGE           = 0x00000080,
+        MF_APPEND           = 0x00000100,
+        MF_DELETE           = 0x00000200,
+        MF_REMOVE           = 0x00001000,
+        MF_BYCOMMAND        = 0x00000000,
+        MF_BYPOSITION       = 0x00000400,
+        MF_SEPARATOR        = 0x00000800,
+        MF_ENABLED          = 0x00000000,
+        MF_GRAYED           = 0x00000001,
+        MF_DISABLED         = 0x00000002,
+        MF_UNCHECKED        = 0x00000000,
+        MF_CHECKED          = 0x00000008,
+        MF_USECHECKBITMAPS  = 0x00000200,
+        MF_STRING           = 0x00000000,
+        MF_BITMAP           = 0x00000004,
+        MF_OWNERDRAW        = 0x00000100,
+        MF_POPUP            = 0x00000010,
+        MF_MENUBARBREAK     = 0x00000020,
+        MF_MENUBREAK        = 0x00000040,
+        MF_UNHILITE         = 0x00000000,
+        MF_HILITE           = 0x00000080,
+        MF_DEFAULT          = 0x00001000,
+        MF_SYSMENU          = 0x00002000,
+        MF_HELP             = 0x00004000,
+        MF_RIGHTJUSTIFY     = 0x00004000,
+        MF_MOUSESELECT      = 0x00008000,
+        MF_END              = 0x00000080
+    } MENUFLAGS;
+
+    typedef enum {
+        TYMED_HGLOBAL     = 1,
+        TYMED_FILE        = 2,
+        TYMED_ISTREAM     = 4,
+        TYMED_ISTORAGE    = 8,
+        TYMED_GDI         = 16,
+        TYMED_MFPICT      = 32,
+        TYMED_ENHMF       = 64,
+        TYMED_NULL        = 0
+    } TYMED;
+
+    typedef struct {
+        long  cfFormat;
+        long  ptd;
+        DWORD dwAspect;
+        long  lindex;
+        TYMED tymed;
+    } FORMATETC;
+
+    // This is really a union
+    // This is a generic definition
+    typedef struct {
+        TYMED    tymed;
+        long     pData;
+        IUnknown *pUnkForRelease;
+    } STGMEDIUM;
+
+
+    typedef enum {
+        CMF_NORMAL        = 0x00000000,
+        CMF_DEFAULTONLY   = 0x00000001,
+        CMF_VERBSONLY     = 0x00000002,
+        CMF_EXPLORE       = 0x00000004,
+        CMF_NOVERBS       = 0x00000008,
+        CMF_CANRENAME     = 0x00000010,
+        CMF_NODEFAULT     = 0x00000020,
+        CMF_INCLUDESTATIC = 0x00000040,
+        CMF_RESERVED      = 0xffff0000
+    } QUERYCONTEXTMENUFLAGS;
+
+
+
+    [
+        uuid(000214e4-0000-0000-c000-000000000046),
+        helpstring("IContextMenu Interface"),
+        odl
+    ]
+    interface IContextMenu : IUnknown
+    {
+        HRESULT QueryContextMenu(
+                    [in] HMENU hmenu,
+                    [in] UINT indexMenu,
+                    [in] UINT idCmdFirst,
+                    [in] UINT idCmdLast,
+                    [in] QueryContextMenuFlags uFlags);
+
+        HRESULT InvokeCommand([in] LPCMINVOKECOMMANDINFO lpcmi);
+
+        HRESULT GetCommandString([in] UINT    idCmd,
+                                 [in] UINT    uType,
+                                 [in] UINT    pwReserved,
+                                 [in] LPSTRVB pszName,
+                                 [in] UINT    cchMax);
+    }
+
+    //---------------------------------------------------------
+    // ICopyHook
+    //---------------------------------------------------------
+
+    typedef enum {
+        FO_MOVE   = 0x0001,
+        FO_COPY   = 0x0002,
+        FO_DELETE = 0x0003,
+        FO_RENAME = 0x0004
+    } FO;
+
+    [
+        uuid(000214EF-0000-0000-C000-000000000046),
+        helpstring("ICopyHookA Interface"),
+        odl
+    ]
+    interface ICopyHookA : IUnknown
+    {
+        HRESULT CopyCallback([in] HWND hwnd,
+                             [in] UINT wFunc,
+                             [in] UINT wFlags,
+                             [in] LPCSTRVB pszSrcFile,
+                             [in] DWORD dwSrcAttribs,
+                             [in] LPCSTRVB pszDestFile,
+                             [in] DWORD dwDestAttribs);
+    }
+
+    [
+        uuid(000214FC-0000-0000-C000-000000000046),
+        helpstring("ICopyHookW Interface"),
+        odl
+    ]
+    interface ICopyHookW : IUnknown
+    {
+        HRESULT CopyCallback([in] HWND hwnd,
+                             [in] UINT wFunc,
+                             [in] UINT wFlags,
+                             [in] LPCWSTRVB pszSrcFile,
+                             [in] DWORD dwSrcAttribs,
+                             [in] LPCWSTRVB pszDestFile,
+                             [in] DWORD dwDestAttribs);
+    }
+
+    //---------------------------------------------------------
+    // IDataObject
+    //---------------------------------------------------------
+    typedef enum {
+        DV_E_FORMATETC             = 0x80040064,
+        DV_E_DVTARGETDEVICE        = 0x80040065,
+        DV_E_STGMEDIUM             = 0x80040066,
+        DV_E_STATDATA              = 0x80040067,
+        DV_E_LINDEX                = 0x80040068,
+        DV_E_TYMED                 = 0x80040069,
+        DV_E_CLIPFORMAT            = 0x8004006A,
+        DV_E_DVASPECT              = 0x8004006B,
+        DV_E_DVTARGETDEVICE_SIZE   = 0x8004006C,
+        DV_E_NOIVIEWOBJECT         = 0x8004006D
+    } DV_ERROR;
+
+    typedef enum tagDATADIR
+    {
+        DATADIR_GET = 1,
+        DATADIR_SET = 2
+    } DATADIR;
+
+
+    [
+        uuid(0000010e-0000-0000-C000-000000000046),
+        helpstring("IDataObject Interface"),
+        odl
+    ]
+    interface IDataObject : IUnknown
+    {
+        HRESULT GetData(
+                       [in] FORMATETC *pformatetcIn,
+                       [in,out] STGMEDIUM *pmedium);
+
+        HRESULT GetDataHere(
+                       [in] FORMATETC *pformatetc,
+                       [in,out] STGMEDIUM *pmedium);
+
+        HRESULT QueryGetData(
+                       [in] FORMATETC *pformatetc);
+
+        HRESULT GetCanonicalFormatEtc(
+                       [in] FORMATETC *pformatectIn,
+                       [in,out] FORMATETC *pformatetcOut);
+
+        HRESULT SetData(
+                       [in] FORMATETC *pformatetc,
+                       [in] STGMEDIUM *pmedium,
+                       [in] BOOL fRelease);
+
+        HRESULT EnumFormatEtc(
+                       [in] long dwDirection,
+                       [in,out] IEnumFORMATETC **ppenumFormatEtc);
+
+        HRESULT DAdvise(
+                       [in] FORMATETC *pformatetc,
+                       [in] long advf,
+                       [in] long pAdvSink,
+                       [in] long pdwConnection);
+
+        HRESULT DUnadvise(
+                       [in] long dwConnection);
+
+        HRESULT EnumDAdvise(
+                       [in] long ppenumAdvise);
+    }
+
+    //---------------------------------------------------------
+    // IDockingWindow (derived from IOleWindow)
+    //---------------------------------------------------------
+    [
+        uuid(012dd920-7b26-11d0-8ca9-00a0c92dbfe8),
+        helpstring("IDockingWindow Interface"),
+        odl
+    ]
+    interface IDockingWindow : IUnknown
+    {
+
+        //IOleWindow
+        HRESULT GetWindow([out, retval] long *phWnd);
+        HRESULT ContextSensitiveHelp([in] boolean fEnterMode);
+
+        //IDockingWindow
+        HRESULT ShowDW([in] boolean fShow);
+        HRESULT CloseDW([in] long dwReserved);
+        HRESULT ResizeBorderDW([in] long prcBorder,
+                               [in] IUnknownVB *punkToolbarSite,
+                               [in] boolean fReserved);
+    }
+
+    //---------------------------------------------------------
+    // IDockingWindowFrame (derived from IOleWindow)
+    //---------------------------------------------------------
+    [
+        uuid(47d2657a-7b27-11d0-8ca9-00a0c92dbfe8),
+        helpstring("IDockingWindowFrame Interface"),
+        odl
+    ]
+    interface IDockingWindowFrame : IUnknown
+    {
+
+        //IOleWindow
+        HRESULT GetWindow([out, retval] long *phWnd);
+        HRESULT ContextSensitiveHelp([in] boolean fEnterMode);
+
+        //IDockingWindowFrame
+        HRESULT AddToolbar([in] IUnknown *punkSrc,
+                           [in] LPCWSTRVB pwszItem,
+                           [in] DWORD dwAddFlags);
+
+        HRESULT RemoveToolbar([in] IUnknown *punkSrc,
+                              [in] DWORD dwRemoveFlags);
+
+        HRESULT FindToolbar([in] LPCWSTRVB pwszItem,
+                            [in] REFIID riid,
+                            [in,out] LPVOID* ppvObj);
+
+    }
+
+    //---------------------------------------------------------
+    // IDockingWindowSite (derived from IOleWindow)
+    //---------------------------------------------------------
+    [
+        uuid(2a342fc2-7b26-11d0-8ca9-00a0c92dbfe8),
+        helpstring("IDockingWindowSite Interface"),
+        odl
+    ]
+    interface IDockingWindowSite : IUnknown
+    {
+
+        //IOleWindow
+        HRESULT GetWindow([out, retval] long *phWnd);
+        HRESULT ContextSensitiveHelp([in] boolean fEnterMode);
+
+        //IDockingWindowSite
+        HRESULT GetBorderDW([in] IUnknown* punkObj,
+                            [in] LPRECT prcBorder);
+
+        HRESULT RequestBorderSpaceDW([in] IUnknown* punkObj,
+                                     [in] LPCBORDERWIDTHS pbw);
+
+        HRESULT SetBorderSpaceDW([in] IUnknown* punkObj,
+                                 [in] LPCBORDERWIDTHS pbw);
+
+    }
+
+
+    //---------------------------------------------------------
+    // IDeskband (derived from IDockingWindow)
+    //---------------------------------------------------------
+    typedef enum {
+        DBIM_MINSIZE   = 0x0001,
+        DBIM_MAXSIZE   = 0x0002,
+        DBIM_INTEGRAL  = 0x0004,
+        DBIM_ACTUAL    = 0x0008,
+        DBIM_TITLE     = 0x0010,
+        DBIM_MODEFLAGS = 0x0020,
+        DBIM_BKCOLOR   = 0x0040
+    } DBIM;
+
+    // DESKBANDINFO dwModeFlags values
+    typedef enum {
+        DBIMF_NORMAL         = 0x0000,
+        DBIMF_VARIABLEHEIGHT = 0x0008,
+        DBIMF_DEBOSSED       = 0x0020,
+        DBIMF_BKCOLOR        = 0x0040
+    } DBIMF;
+
+    // GetBandInfo view mode values
+    typedef enum {
+        DBIF_VIEWMODE_NORMAL      =  0x0000,
+        DBIF_VIEWMODE_VERTICAL    =  0x0001,
+        DBIF_VIEWMODE_FLOATING    =  0x0002,
+        DBIF_VIEWMODE_TRANSPARENT =  0x0004
+    } DBIF;
+
+    [
+        uuid(eb0fe172-1a3a-11d0-89b3-00a0c90a90ac),
+        helpstring("IDeskBand Interface"),
+        odl
+    ]
+    interface IDeskBand : IUnknown
+    {
+
+        //IOleWindow
+        HRESULT GetWindow([out, retval] long *phWnd);
+        HRESULT ContextSensitiveHelp([in] boolean fEnterMode);
+
+        //IDockingWindow
+        HRESULT ShowDW([in] boolean fShow);
+        HRESULT CloseDW([in] long dwReserved);
+        HRESULT ResizeBorderDW([in] long prcBorder,
+                               [in] long punkToolbarSite,
+                               [in] boolean fReserved);
+
+        //IDeskBand
+        HRESULT GetBandInfo([in] long dwBandID,
+                            [in] long dwViewMode,
+                            [in] LPDESKBANDINFO pdbi);
+    }
+
+
+    //---------------------------------------------------------
+    // IDropTarget
+    //---------------------------------------------------------
+
+    typedef enum {
+        DROPEFFECT_NONE = 0,
+        DROPEFFECT_COPY = 1,
+        DROPEFFECT_MOVE = 2,
+        DROPEFFECT_LINK = 4,
+        DROPEFFECT_SCROLL = 0x80000000
+    } DROPEFFECT;
+    [
+        uuid(00000122-0000-0000-C000-000000000046),
+        helpstring("IDropTarget Interface"),
+        odl
+    ]
+    interface IDropTarget : IUnknown
+    {
+
+        typedef IDropTarget *LPDROPTARGET;
+
+
+        HRESULT DragEnter
+        (
+            [in] IDataObject *pDataObj,
+            [in] KEYSTATES grfKeyState,
+            [in] long x,
+            [in] long y,
+            [in, out] DROPEFFECT *pdwEffect
+        );
+
+        HRESULT DragOver
+        (
+            [in] KEYSTATES grfKeyState,
+            [in] long x,
+            [in] long y,
+            [in, out] DROPEFFECT *pdwEffect
+        );
+
+        HRESULT DragLeave(void);
+
+        HRESULT Drop
+        (
+            [in] IDataObject *pDataObj,
+            [in] KEYSTATES grfKeyState,
+            [in] long x,
+            [in] long y,
+            [in, out] DROPEFFECT *pdwEffect
+        );
+    }
+
+    //----------------------------------------------------------
+    // IEnumFORMATETC
+    //----------------------------------------------------------
+    [
+        uuid(00000103-0000-0000-C000-000000000046),
+        helpstring("IEnumFORMATETC Interface"),
+        odl
+    ]
+    interface IEnumFORMATETC : IUnknown
+    {
+        HRESULT Next([in] ULONG celt,
+                     [in, out] FORMATETC *rgelt,
+                     [in, out] ULONG *pceltFetched);
+        HRESULT Skip([in] ULONG celt);
+        HRESULT Reset();
+        HRESULT Clone([in, out] IEnumFORMATETC **ppenum);
+    }
+
+    //----------------------------------------------------------
+    // IEnumIDList
+    //----------------------------------------------------------
+    [
+        uuid(000214f2-0000-0000-c000-000000000046),
+        helpstring("IEnumIDList Interface"),
+        odl
+    ]
+    interface IEnumIDList : IUnknown
+    {
+        HRESULT Next([in] ULONG celt,
+                     [in, out] LPITEMIDLIST *rgelt,
+                     [in, out] ULONG *pceltFetched);
+        HRESULT Skip([in] ULONG celt);
+        HRESULT Reset();
+        HRESULT Clone([in, out] IEnumIDList **ppenum);
+    }
+
+    //----------------------------------------------------------
+    // IExtractIcon
+    //----------------------------------------------------------
+
+    // GetIconLocation input flags
+    typedef enum {
+        GIL_OPENICON = 0x0001,
+        GIL_FORSHELL = 0x0002,
+        GIL_ASYNC    = 0x0020
+    } GETICONLOCATIONINPUT;
+
+    // GetIconLocation return flags
+    typedef enum {
+        GIL_SIMULATEDOC  = 0x0001,
+        GIL_PERINSTANCE  = 0x0002,
+        GIL_PERCLASS     = 0x0004,
+        GIL_NOTFILENAME  = 0x0008,
+        GIL_DONTCACHE    = 0x0010
+    } GETICONLOCATIONRETURN;
+
+    [
+        uuid(000214eb-0000-0000-c000-000000000046),
+        helpstring("IExtractIconA Interface"),
+        odl
+    ]
+    interface IExtractIconA : IUnknown
+    {
+
+        HRESULT GetIconLocation(
+                      [in] UINT uFlags,
+                      [in] LPSTRVB szIconFile,
+                      [in] UINT cchMax,
+                      [in, out] long *piIndex,
+                      [in, out] GETICONLOCATIONRETURN *pwFlags);
+
+
+        HRESULT Extract([in] LPCSTRVB pszFile,
+                        [in] UINT nIconIndex,
+                        [in, out] HICON *phiconLarge,
+                        [in, out] HICON *phiconSmall,
+                        [in] UINT nIconSize);
+    }
+
+    [
+        uuid(000214fa-0000-0000-c000-000000000046),
+        helpstring("IExtractIconW"),
+        odl
+    ]
+    interface IExtractIconW : IUnknown
+    {
+        HRESULT GetIconLocation(
+                      [in] UINT uFlags,
+                      [in] LPWSTRVB szIconFile,
+                      [in] UINT cchMax,
+                      [in, out] long *piIndex,
+                      [in, out] GETICONLOCATIONRETURN *pwFlags);
+
+        HRESULT Extract([in] LPWSTRVB pszFile,
+                        [in] UINT nIconIndex,
+                        [in, out] HICON *phiconLarge,
+                        [in, out] HICON *phiconSmall,
+                        [in] UINT nIconSize);
+    }
+
+    //---------------------------------------------------------
+    // IFileViewer
+    //---------------------------------------------------------
+    typedef enum {
+        FVSIF_RECT      = 0x00000001,
+        FVSIF_PINNED    = 0x00000002,
+        FVSIF_NEWFAILED = 0x08000000,
+        FVSIF_NEWFILE   = 0x80000000,
+        FVSIF_CANVIEWIT = 0x40000000
+    }FVSIF;
+
+    [
+        uuid(000214f0-0000-0000-c000-000000000046),
+        helpstring("IFileViewerA Interface"),
+        odl
+    ]
+    interface IFileViewerA : IUnknown
+    {
+        HRESULT ShowInitialize([in] IFileViewerSite *lpfsi);
+        HRESULT Show([in] LPFVSHOWINFO pvsi);
+        HRESULT PrintTo([in] LPSTRVB pszDriver,
+                        [in] BOOL fSuppressUI);
+    }
+
+    [
+        uuid(000214f8-0000-0000-c000-000000000046),
+        helpstring("IFileViewerW Interface"),
+        odl
+    ]
+    interface IFileViewerW : IUnknown
+    {
+        HRESULT ShowInitialize([in] IFileViewerSite *lpfsi);
+        HRESULT Show([in] LPFVSHOWINFO pvsi);
+        HRESULT PrintTo([in] LPWSTRVB pszDriver,
+                        [in] BOOL fSuppressUI);
+    }
+
+    //---------------------------------------------------------
+    // IFileViewerSite
+    //---------------------------------------------------------
+    [
+        uuid(000214f3-0000-0000-c000-000000000046),
+        helpstring("IFileViewerSite Interface"),
+        odl
+    ]
+    interface IFileViewerSite : IUnknown
+    {
+        HRESULT SetPinnedWindow([in] HWND hwnd);
+        HRESULT GetPinnedWindow([out, retval] HWND *phwnd);
+    }
+
+    //---------------------------------------------------------
+    //IInputObject
+    //---------------------------------------------------------
+    [
+        uuid(68284faa-6a48-11d0-8c78-00c04fd918b4),
+        helpstring("IInputObject Interface"),
+        odl
+    ]
+    interface IInputObject : IUnknown
+    {
+        HRESULT UIActivateIO([in] boolean fActivate,
+                             [in] LPMSG lpMsg);
+        HRESULT HasFocusIO();
+        HRESULT TranslateAcceleratorIO([in] LPMSG lpMsg);
+    }
+
+    //---------------------------------------------------------
+    //IMalloc
+    //---------------------------------------------------------
+    [
+        uuid(00000002-0000-0000-C000-000000000046),
+        helpstring("IMalloc Interface"),
+        odl
+    ]
+
+    interface IMalloc : IUnknown
+    {
+
+        //void *Alloc([in] ULONG cb);
+        long Alloc([in] ULONG cb);
+
+        //void *Realloc ([in] void *pv,
+        //               [in] ULONG cb);
+        long Realloc ([in] VOID *pv, [in] ULONG cb);
+
+        void Free([in] VOID *pv);
+
+        ULONG GetSize([in] VOID *pv);
+
+        int DidAlloc([in] VOID *pv);
+
+        void HeapMinimize();
+    }
+
+    //---------------------------------------------------------
+    //IObjectWithSite
+    //---------------------------------------------------------
+    [
+        uuid(FC4801A3-2BA9-11CF-A229-00AA003D7352),
+        helpstring("IObjectWithSite Interface"),
+        odl
+    ]
+    interface IObjectWithSite : IUnknown
+    {
+        HRESULT SetSite([in] IUnknownVB* pSite);
+        HRESULT GetSite([in] REFIID priid,
+                        [in, out] VOID * ppvObj);
+    }
+
+
+    //---------------------------------------------------------
+    //IOleCommandTarget
+    //---------------------------------------------------------
+
+    [
+        uuid(B722BCCB-4E68-101B-A2BC-00AA00404770),
+        helpstring("IOleCommandTarget Interface"),
+        odl
+    ]
+    interface IOleCommandTarget : IUnknown
+    {
+
+        typedef enum OLECMDF {
+            OLECMDF_SUPPORTED       = 0x00000001,
+            OLECMDF_ENABLED         = 0x00000002,
+            OLECMDF_LATCHED         = 0x00000004,
+            OLECMDF_NINCHED         = 0x00000008,
+        } OLECMDF;
+
+        typedef struct _tagOLECMD {
+            ULONG   cmdID;
+            DWORD   cmdf;
+        } OLECMD;
+
+        typedef struct _tagOLECMDTEXT{
+                DWORD cmdtextf;
+                ULONG cwActual;
+                ULONG cwBuf;
+                long  rgwz;
+        } OLECMDTEXT;
+
+        typedef enum OLECMDID {
+            OLECMDID_OPEN                           = 1,
+            OLECMDID_NEW                            = 2,
+            OLECMDID_SAVE                           = 3,
+            OLECMDID_SAVEAS                         = 4,
+            OLECMDID_SAVECOPYAS                     = 5,
+            OLECMDID_PRINT                          = 6,
+            OLECMDID_PRINTPREVIEW                   = 7,
+            OLECMDID_PAGESETUP                      = 8,
+            OLECMDID_SPELL                          = 9,
+            OLECMDID_PROPERTIES                     = 10,
+            OLECMDID_CUT                            = 11,
+            OLECMDID_COPY                           = 12,
+            OLECMDID_PASTE                          = 13,
+            OLECMDID_PASTESPECIAL                   = 14,
+            OLECMDID_UNDO                           = 15,
+            OLECMDID_REDO                           = 16,
+            OLECMDID_SELECTALL                      = 17,
+            OLECMDID_CLEARSELECTION                 = 18,
+            OLECMDID_ZOOM                           = 19,
+            OLECMDID_GETZOOMRANGE                   = 20,
+            OLECMDID_UPDATECOMMANDS                 = 21,
+            OLECMDID_REFRESH                        = 22,
+            OLECMDID_STOP                           = 23,
+            OLECMDID_HIDETOOLBARS                   = 24,
+            OLECMDID_SETPROGRESSMAX                 = 25,
+            OLECMDID_SETPROGRESSPOS                 = 26,
+            OLECMDID_SETPROGRESSTEXT                = 27,
+            OLECMDID_SETTITLE                       = 28,
+            OLECMDID_SETDOWNLOADSTATE               = 29,
+            OLECMDID_STOPDOWNLOAD                   = 30,
+            OLECMDID_ONTOOLBARACTIVATED             = 31,
+            OLECMDID_FIND                           = 32,
+            OLECMDID_DELETE                         = 33,
+            OLECMDID_HTTPEQUIV                      = 34,
+            OLECMDID_HTTPEQUIV_DONE                 = 35,
+            OLECMDID_ENABLE_INTERACTION             = 36,
+            OLECMDID_ONUNLOAD                       = 37,
+            OLECMDID_PROPERTYBAG2                   = 38,
+            OLECMDID_PREREFRESH                     = 39,
+        } OLECMDID;
+
+        typedef enum OLECMDTEXTF {
+            OLECMDTEXTF_NONE        = 0,
+            OLECMDTEXTF_NAME        = 1,
+            OLECMDTEXTF_STATUS      = 2,
+        } OLECMDTEXTF;
+
+        typedef enum OLECMDEXECOPT {
+            OLECMDEXECOPT_DODEFAULT         = 0,
+            OLECMDEXECOPT_PROMPTUSER        = 1,
+            OLECMDEXECOPT_DONTPROMPTUSER    = 2,
+            OLECMDEXECOPT_SHOWHELP          = 3
+        } OLECMDEXECOPT;
+
+        HRESULT QueryStatus([in] LPGUID pguidCmdGroup,
+                            [in] ULONG cCmds,
+                            [in] LPOLECMD prgCmds,
+                            [in] LPOLECMDTEXT pCmdText);
+
+        HRESULT Exec([in] LPGUID pguidCmdGroup,
+                     [in] DWORD nCmdID,
+                     [in] DWORD nCmdExecOpt,
+                     [in] VARIANT *pvaIn,
+                     [in, out] VARIANT *pvaOut);
+
+    }
+
+    //---------------------------------------------------------
+    //IOleWindow
+    //---------------------------------------------------------
+    [
+        uuid(00000114-0000-0000-C000-000000000046),
+        helpstring("IOleWindow Interface"),
+        odl
+    ]
+    interface IOleWindow : IUnknown
+    {
+        HRESULT GetWindow([out, retval] long *phwnd);
+        HRESULT ContextSensitiveHelp([in] boolean fEnterMode);
+    };
+
+    //---------------------------------------------------------
+    //IPersist
+    //---------------------------------------------------------
+    [
+        uuid(0000010c-0000-0000-C000-000000000046),
+        helpstring("IPersist Interface"),
+        odl
+    ]
+    interface IPersist : IUnknown
+    {
+        HRESULT GetClassID([in, out] CLSID *lpClassID);
+    }
+
+    //---------------------------------------------------------
+    //
+    // IPersistFile
+    //
+    // (this interface is actually derived from
+    //  IPersist not IUnknown)
+    //---------------------------------------------------------
+
+    [
+        uuid(0000010b-0000-0000-C000-000000000046),
+        helpstring("IPersistFile Interface"),
+        odl
+    ]
+    interface IPersistFile : IUnknown
+    {
+
+        //IPersist
+        HRESULT GetClassID([in, out] CLSID *lpClassID);
+
+        //IPersistFile
+        HRESULT IsDirty();
+
+        HRESULT Load([in] LPCOLESTR pszFileName,
+                     [in] DWORD dwMode);
+
+        HRESULT Save([in] LPCOLESTR pszFileName,
+                     [in] BOOL fRemember);
+
+        HRESULT SaveCompleted([in] LPCOLESTR pszFileName);
+
+        HRESULT GetCurFile([in, out] LPOLESTR *ppszFileName);
+
+    }
+
+
+    //---------------------------------------------------------
+    // IPersistFolder
+    //
+    // (this interface is actually derived from
+    //  IPersist not IUnknown)
+    //---------------------------------------------------------
+    [
+        uuid(000214ea-0000-0000-c000-000000000046),
+        helpstring("IPersistFolder Interface"),
+        odl
+    ]
+    interface IPersistFolder : IUnknown
+    {
+        // IPersist methods
+        HRESULT GetClassID([in, out] CLSID *lpClassID);
+
+        // IPersistFolder methods
+        HRESULT Initialize([in] LPCITEMIDLIST pidl);
+    }
+
+    //---------------------------------------------------------
+    // IQueryInfo
+    //---------------------------------------------------------
+    [
+        uuid(00021500-0000-0000-C000-000000000046),
+        helpstring("IQueryInfo Interface"),
+        odl
+    ]
+    interface IQueryInfo : IUnknown
+    {
+        HRESULT GetInfoTip([in] DWORD dwFlags,
+                           [in, out] LPWSTRVB *ppwszTip);
+        HRESULT GetInfoFlags([in, out] DWORD *pdwFlags);
+    }
+
+    [
+        uuid(6d5140c1-7436-11ce-8034-00aa006009fa),
+        helpstring("IServiceProvider Interface"),
+        odl
+    ]
+
+    //---------------------------------------------------------
+    // IServiceProvider
+    //---------------------------------------------------------
+    interface IServiceProvider : IUnknown
+    {
+
+        HRESULT QueryService(
+            [in] REFGUID guidService,
+            [in] REFIID riid,
+            [out, retval] IUnknown** ppvObject);
+    }
+
+    //---------------------------------------------------------
+    // IShellBrowser
+    //
+    // (this interface is actually derived from
+    //   IOleWindow)
+    //---------------------------------------------------------
+    typedef enum {
+        SBSP_DEFBROWSER             = 0x0000,
+        SBSP_SAMEBROWSER            = 0x0001,
+        SBSP_NEWBROWSER             = 0x0002,
+        SBSP_DEFMODE                = 0x0000,
+        SBSP_OPENMODE               = 0x0010,
+        SBSP_EXPLOREMODE            = 0x0020,
+        SBSP_ABSOLUTE               = 0x0000,
+        SBSP_RELATIVE               = 0x1000,
+        SBSP_PARENT                 = 0x2000,
+        SBSP_NAVIGATEBACK           = 0x4000,
+        SBSP_NAVIGATEFORWARD        = 0x8000,
+        SBSP_ALLOW_AUTONAVIGATE     = 0x10000,
+        SBSP_INITIATEDBYHLINKFRAME  = 0x80000000,
+        SBSP_REDIRECT               = 0x40000000,
+        SBSP_WRITENOHISTORY         = 0x08000000,
+        SBSP_NOAUTOSELECT           = 0x04000000
+    } SBSP_BROWSER;
+
+    [
+        uuid(000214e2-0000-0000-c000-000000000046),
+        helpstring("IShellBrowser Interface"),
+        odl
+    ]
+    interface IShellBrowser : IUnknown
+    {
+        // IOleWindow
+        HRESULT GetWindow([out, retval] HWND * lphwnd);
+        HRESULT ContextSensitiveHelp([in] BOOL fEnterMode);
+
+        // IShellBrowser
+        HRESULT InsertMenusSB(
+                     [in] HMENU hmenuShared,
+                     [in] LPOLEMENUGROUPWIDTHS lpMenuWidths);
+
+        HRESULT SetMenuSB([in] HMENU hmenuShared,
+                          [in] HOLEMENU holemenuReserved,
+                          [in] HWND hwndActiveObject);
+
+        HRESULT RemoveMenusSB([in] HMENU hmenuShared);
+
+        HRESULT SetStatusTextSB([in] LPCOLESTR lpszStatusText);
+
+        HRESULT EnableModelessSB([in] BOOL fEnable);
+
+        HRESULT TranslateAcceleratorSB([in] LPMSG lpmsg,
+                                       [in] WORD wID);
+
+        HRESULT BrowseObject([in] LPCITEMIDLIST pidl,
+                             [in] SBSP_BROWSER wFlags);
+
+        HRESULT GetViewStateStream([in] DWORD grfMode,
+                                   [in, out] LPSTREAM  *ppStrm);
+
+        HRESULT GetControlWindow([in] UINT id,
+                                 [out, retval] HWND * lphwnd);
+
+        HRESULT SendControlMsg([in] UINT id,
+                               [in] UINT uMsg,
+                               [in] WPARAM wParam,
+                               [in] LPARAM lParam,
+                               [out, retval] LRESULT * pret);
+
+        HRESULT QueryActiveShellView(
+                             [out, retval] IShellView ** ppshv);
+
+        HRESULT OnViewWindowActive([in] IShellView * ppshv);
+
+        HRESULT SetToolbarItems([in] LPTBBUTTON lpButtons,
+                                [in] UINT nButtons,
+                                [in] UINT uFlags);
+    }
+
+    //---------------------------------------------------------
+    // IShellExtInit
+    //---------------------------------------------------------
+
+    [
+        uuid(000214E8-0000-0000-C000-000000000046),
+        helpstring("IShellExtInit Interface"),
+        odl
+    ]
+    interface IShellExtInit : IUnknown
+    {
+        HRESULT Initialize(
+                        [in] LPCITEMIDLIST pidlFolder,
+                        [in] IDataObject   *pDataObj,
+                        [in] HKEY          hKeyProgID);
+    }
+
+
+    //---------------------------------------------------------
+    // IShellFolder
+    //---------------------------------------------------------
+
+    // IShellFolder::GetDisplayNameOf/SetNameOf uFlags
+    typedef enum {
+        SHGDN_NORMAL             = 0,
+        SHGDN_INFOLDER           = 1,
+        SHGDN_INCLUDE_NONFILESYS = 0x2000,
+        SHGDN_FORADDRESSBAR      = 0x4000,
+        SHGDN_FORPARSING         = 0x8000,
+    } SHGNO;
+
+    // IShellFolder::EnumObjects
+    typedef enum {
+        SHCONTF_FOLDERS         = 32,
+        SHCONTF_NONFOLDERS      = 64,
+        SHCONTF_INCLUDEHIDDEN   = 128,
+    } SHCONTF;
+
+    // IShellFolder::GetAttributesOf flags
+    typedef enum {
+        SFGAO_CANCOPY           = 0x00000001, // DROPEFFECT_COPY
+        SFGAO_CANMOVE           = 0x00000002, // DROPEFFECT_MOVE
+        SFGAO_CANLINK           = 0x00000004, // DROPEFFECT_LINK
+        SFGAO_CANRENAME         = 0x00000010,
+        SFGAO_CANDELETE         = 0x00000020,
+        SFGAO_HASPROPSHEET      = 0x00000040,
+        SFGAO_DROPTARGET        = 0x00000100,
+        SFGAO_CAPABILITYMASK    = 0x00000177,
+        SFGAO_LINK              = 0x00010000,
+        SFGAO_SHARE             = 0x00020000,
+        SFGAO_READONLY          = 0x00040000,
+        SFGAO_GHOSTED           = 0x00080000,
+        SFGAO_HIDDEN            = 0x00080000,
+        SFGAO_DISPLAYATTRMASK   = 0x000F0000,
+        SFGAO_FILESYSANCESTOR   = 0x10000000,
+        SFGAO_FOLDER            = 0x20000000,
+        SFGAO_FILESYSTEM        = 0x40000000,
+        SFGAO_HASSUBFOLDER      = 0x80000000,
+        SFGAO_CONTENTSMASK      = 0x80000000,
+        SFGAO_VALIDATE          = 0x01000000,
+        SFGAO_REMOVABLE         = 0x02000000,
+        SFGAO_COMPRESSED        = 0x04000000,
+        SFGAO_BROWSABLE         = 0x08000000,
+        SFGAO_NONENUMERATED     = 0x00100000,
+        SFGAO_NEWCONTENT        = 0x00200000,
+    }SFGAO;
+
+    typedef struct _SHITEMID {
+        short cb;
+        BYTE  abID[1];
+    } SHITEMID;
+
+    typedef struct _ITEMIDLIST {
+        SHITEMID mkid;
+    } ITEMIDLIST;
+
+    [
+        uuid(000214e6-0000-0000-c000-000000000046),
+        helpstring("IShellFolder Interface"),
+        odl
+    ]
+    interface IShellFolder : IUnknown
+    {
+        HRESULT ParseDisplayName([in] HWND hwndOwner,
+                                 [in] LPBC pbcReserved,
+                                 [in] LPOLESTR lpszDisplayName,
+                                 [in] ULONG * pchEaten,
+                                 [in, out] LPITEMIDLIST * ppidl,
+                                 [in, out] ULONG *pdwAttributes);
+
+        HRESULT EnumObjects(
+                  [in] HWND hwndOwner,
+                  [in] DWORD grfFlags,
+                  [out, retval] IEnumIDList ** ppenumIDList);
+
+        HRESULT BindToObject([in] LPCITEMIDLIST pidl,
+                             [in] LPBC pbcReserved,
+                             [in] REFIID riid,
+                             [in, out] LPVOID *ppvOut);
+
+        HRESULT BindToStorage([in] LPCITEMIDLIST pidl,
+                              [in] LPBC pbcReserved,
+                              [in] REFIID riid,
+                              [in, out] LPVOID * ppvObj);
+
+        HRESULT CompareIDs([in] LPARAM lParam,
+                           [in] LPCITEMIDLIST pidl1,
+                           [in] LPCITEMIDLIST pidl2);
+
+        HRESULT CreateViewObject([in] HWND hwndOwner,
+                                 [in] REFIID riid,
+                                 [in, out] LPVOID * ppvOut);
+
+        HRESULT GetAttributesOf([in] UINT cidl,
+                                [in, out] LPCITEMIDLIST * apidl,
+                                [in, out] ULONG * rgfInOut);
+
+        HRESULT GetUIObjectOf([in] HWND hwndOwner,
+                              [in] UINT cidl,
+                              [in, out] LPCITEMIDLIST * apidl,
+                              [in] REFIID riid,
+                              [in, out] UINT * prgfInOut,
+                              [in] LPVOID ppvOut);
+
+        HRESULT GetDisplayNameOf([in] LPCITEMIDLIST pidl,
+                                 [in] DWORD uFlags,
+                                 [in] LPSTRRET lpName);
+
+        HRESULT SetNameOf([in] HWND hwndOwner,
+                          [in] LPCITEMIDLIST pidl,
+                          [in] LPCOLESTR lpszName,
+                          [in] DWORD uFlags,
+                          [in, out] LPITEMIDLIST * ppidlOut);
+    }
+
+
+    //---------------------------------------------------------
+    // IShellLinkA
+    //---------------------------------------------------------
+    [
+        uuid(000214EE-0000-0000-C000-000000000046),
+        helpstring("IShellLinkA Interface"),
+        odl
+    ]
+    interface IShellLinkA : IUnknown {
+
+        HRESULT GetPath([in] LPSTRVB pszFile,
+                        [in] int cchMaxPath,
+                        [in] LPWIN32_FIND_DATA pfd,
+                        [in] DWORD fFlags);
+
+        HRESULT GetIDList([out, retval] LPITEMIDLIST * ppidl);
+
+        HRESULT SetIDList([in] LPCITEMIDLIST pidl);
+
+        HRESULT GetDescription([in] LPCSTRVB pszName,
+                               [in] int cchMaxName);
+
+        HRESULT SetDescription([in] LPCSTRVB pszName);
+
+        HRESULT GetWorkingDirectory([in] LPCSTRVB pszDir,
+                                    [in] int cchMaxPath);
+
+        HRESULT SetWorkingDirectory([in] LPCSTRVB pszDir);
+
+        HRESULT GetArguments([in] LPSTRVB pszArgs,
+                             [in] int cchMaxPath);
+
+        HRESULT SetArguments([in] LPCSTRVB pszArgs);
+
+        HRESULT GetHotkey([out, retval] WORD *pwHotkey);
+
+        HRESULT SetHotkey([in] WORD wHotkey);
+
+        HRESULT GetShowCmd([out, retval] int *piShowCmd);
+
+        HRESULT SetShowCmd([in] int iShowCmd);
+
+        HRESULT GetIconLocation([in] LPSTRVB pszIconPath,
+                                [in] int cchIconPath,
+                                [out, retval] int *piIcon);
+
+        HRESULT SetIconLocation([in] LPCSTRVB pszIconPath,
+                                [in] int iIcon);
+
+        HRESULT SetRelativePath([in] LPCSTRVB pszPathRel,
+                                [in] DWORD dwReserved);
+
+        HRESULT Resolve([in] HWND hwnd, [in] DWORD fFlags);
+
+        HRESULT SetPath([in] LPCSTRVB pszFile);
+    }
+
+    //---------------------------------------------------------
+    // IShellLinkW
+    //---------------------------------------------------------
+    [
+
+        uuid(000214F9-0000-0000-C000-000000000046),
+        helpstring("IShellLinkW Interface"),
+        odl
+    ]
+    interface IShellLinkW : IUnknown {
+
+        HRESULT GetPath([in] LPWSTRVB pszFile,
+                        [in] int cchMaxPath,
+                        [in] LPWIN32_FIND_DATA pfd,
+                        [in] DWORD fFlags);
+
+        HRESULT GetIDList([out, retval] LPITEMIDLIST * ppidl);
+
+        HRESULT SetIDList([in] LPCITEMIDLIST pidl);
+
+        HRESULT GetDescription([in] LPCWSTRVB pszName,
+                               [in] int cchMaxName);
+
+        HRESULT SetDescription([in] LPCWSTRVB pszName);
+
+        HRESULT GetWorkingDirectory([in] LPCWSTRVB pszDir,
+                                    [in] int cchMaxPath);
+
+        HRESULT SetWorkingDirectory([in] LPCWSTRVB pszDir);
+
+        HRESULT GetArguments([in] LPCWSTRVB pszArgs,
+                             [in] int cchMaxPath);
+
+        HRESULT SetArguments([in] LPCWSTRVB pszArgs);
+
+        HRESULT GetHotkey([out, retval] WORD *pwHotkey);
+
+        HRESULT SetHotkey([in] WORD wHotkey);
+
+        HRESULT GetShowCmd([out, retval] int *piShowCmd);
+
+        HRESULT SetShowCmd([in] int iShowCmd);
+
+        HRESULT GetIconLocation([in] LPCWSTRVB pszIconPath,
+                                [in] int cchIconPath,
+                                [out, retval] int *piIcon);
+
+        HRESULT SetIconLocation([in] LPCWSTRVB pszIconPath,
+                                [in] int iIcon);
+
+        HRESULT SetRelativePath([in] LPCSTRVB pszPathRel,
+                                [in] DWORD dwReserved);
+
+        HRESULT Resolve([in] HWND hwnd, [in] DWORD fFlags);
+
+        HRESULT SetPath([in] LPCWSTRVB pszFile);
+    }
+
+    //---------------------------------------------------------
+    // IShellPropSheetExt
+    //---------------------------------------------------------
+
+    typedef struct MSG {
+        HWND   hwnd;
+        UINT   message;
+        WPARAM wParam;
+        LPARAM lParam;
+        DWORD  time;
+        POINT  pt;
+    } MSG;
+
+    typedef struct {
+        HWND hwndFrom;
+        UINT idFrom;
+        UINT code;
+    } NMHDR;
+
+    typedef enum {
+        PSPCB_RELEASE = 1,
+        PSPCB_CREATE  = 2
+    } PROPSHEETCALLBACKMSG;
+
+    typedef enum {
+        PSP_DEFAULT           = 0x00000000,
+        PSP_DLGINDIRECT       = 0x00000001,
+        PSP_USEHICON          = 0x00000002,
+        PSP_USEICONID         = 0x00000004,
+        PSP_USETITLE          = 0x00000008,
+        PSP_RTLREADING        = 0x00000010,
+        PSP_HASHELP           = 0x00000020,
+        PSP_USEREFPARENT      = 0x00000040,
+        PSP_USECALLBACK       = 0x00000080,
+        PSP_PREMATURE         = 0x00000400,
+        PSP_HIDEHEADER        = 0x00000800,
+        PSP_USEHEADERTITLE    = 0x00001000,
+        PSP_USEHEADERSUBTITLE = 0x00002000
+    } PROPERTYSHEETFLAG;
+
+    typedef enum {
+        PSN_SETACTIVE  = -200,
+        PSN_KILLACTIVE = -201,
+        PSN_APPLY = -202,
+        PSN_RESET = -203,
+        PSN_QUERYCANCEL = -209
+    } PROPSHEETNOTIFYMSG;
+
+    typedef struct {
+        DWORD dwSize;
+        DWORD dwFlags;
+        HINSTANCE hInstance;
+        LPCSTRVB pszTemplate;
+        HICON hIcon;
+        LPCSTRVB pszTitle;
+        DLGPROC pfnDlgProc;
+        LPARAM lParam;
+        LPFNPSPCALLBACK pfnCallback;
+        long pcRefParent;
+        LPCTSTRVB pszHeaderTitle;
+        LPCTSTRVB pszHeaderSubTitle;
+    } PROPSHEETPAGE;
+
+
+    [
+        uuid(000214e9-0000-0000-c000-000000000046),
+        helpstring("IShellPropSheetExt Interface"),
+        odl
+    ]
+    interface IShellPropSheetExt : IUnknown
+    {
+        HRESULT AddPages([in] LPFNADDPROPSHEETPAGE lpfnAddPage,
+                         [in] LPARAM lParam);
+
+        HRESULT ReplacePage(
+                   [in] UINT uPageID,
+                   [in] LPFNADDPROPSHEETPAGE lpfnReplaceWith,
+                   [in] LPARAM lParam);
+    }
+
+
+    //---------------------------------------------------------
+    // IShellView
+    //
+    // (this interface is actually derived from
+    //  IOleWindow not IUnknown)
+    //---------------------------------------------------------
+
+    typedef enum {
+        FCW_STATUS      = 0x0001,
+        FCW_TOOLBAR     = 0x0002,
+        FCW_TREE        = 0x0003,
+        FCW_INTERNETBAR = 0x0006,
+        FCW_PROGRESS    = 0x0008,
+    } FCW;
+
+    typedef struct {
+        UINT     ViewMode;
+        UINT     fFlags;
+    }FOLDERSETTINGS;
+
+    typedef struct _LVITEM {
+        UINT   mask;
+        int    iItem;
+        int    iSubItem;
+        UINT   state;
+        UINT   stateMask;
+        LPTSTR  pszText;
+        int    cchTextMax;
+        int    iImage;
+        LPARAM lParam;
+        int iIndent;
+    } LVITEM;
+
+
+    // shellview select item flags
+    typedef enum {
+        SVSI_DESELECT       = 0x0000,
+        SVSI_SELECT         = 0x0001,
+        SVSI_EDIT           = 0x0003,
+        SVSI_DESELECTOTHERS = 0x0004,
+        SVSI_ENSUREVISIBLE  = 0x0008,
+        SVSI_FOCUSED        = 0x0010,
+        SVSI_TRANSLATEPT    = 0x0020,
+    } SVSI;
+
+    // shellview get item object flags
+    typedef enum {
+        SVGIO_BACKGROUND    = 0x00000000,
+        SVGIO_SELECTION     = 0x00000001,
+        SVGIO_ALLVIEW       = 0x00000002,
+    } SVGIO;
+
+    // uState values for IShellView::UIActivate
+    typedef enum {
+        SVUIA_DEACTIVATE       = 0,
+        SVUIA_ACTIVATE_NOFOCUS = 1,
+        SVUIA_ACTIVATE_FOCUS   = 2,
+        SVUIA_INPLACEACTIVATE  = 3
+    } SVUIA_STATUS;
+
+    [
+        uuid(000214e3-0000-0000-c000-000000000046),
+        helpstring("IShellView Interface"),
+        odl
+    ]
+    interface IShellView : IUnknown
+    {
+        // IOleWindow
+        HRESULT GetWindow([out, retval] HWND * lphwnd);
+        HRESULT ContextSensitiveHelp([in] BOOL fEnterMode);
+
+        // IShellView
+        HRESULT TranslateAccelerator([in] LPMSG lpmsg);
+
+        HRESULT EnableModeless([in] BOOL fEnable);
+
+        HRESULT UIActivate([in] SVUIA_STATUS uState);
+
+        HRESULT Refresh();
+
+        HRESULT CreateViewWindow(
+                     [in, out]  IShellView *lpPrevView,
+                     [in] LPCFOLDERSETTINGS lpfs,
+                     [in, out] IShellBrowser  * psb,
+                     [in] LPRECT prcView,
+                     [in, out] HWND  *phWnd);
+
+        HRESULT DestroyViewWindow();
+
+        HRESULT GetCurrentInfo([in] LPFOLDERSETTINGS lpfs);
+
+        HRESULT AddPropertySheetPages(
+                     [in] DWORD dwReserved,
+                     [in] LPFNADDPROPSHEETPAGE lpfn,
+                     [in] LPARAM lparam);
+
+        HRESULT SaveViewState();
+
+        HRESULT SelectItem([in] LPCITEMIDLIST pidlItem,
+                           [in] UINT uFlags);
+
+        HRESULT GetItemObject([in] UINT uItem,
+                              [in] REFIID riid,
+                              [in] LPVOID *ppv);
+
+    }
+
+    //---------------------------------------------------------
+    // IStream
+    //
+    // (this interface is actually derived from
+    //  ISequentialStream)
+    //---------------------------------------------------------
+    [
+        uuid(0000000c-0000-0000-C000-000000000046),
+        helpstring("IStream Interface"),
+        odl
+    ]
+    interface IStream : IUnknown
+    {
+
+        // ISequentialStream Methods
+        HRESULT Read([in, out] void *pv,
+                     [in] ULONG cb,
+                     [out, retval] ULONG *pcbRead);
+
+        HRESULT Write([in] LPVOID *pv,
+                      [in] ULONG cb,
+                      [out, retval] ULONG *pcbWritten);
+
+        //IStream
+
+        typedef struct tagSTATSTG
+        {
+            LPOLESTR pwcsName;
+            DWORD type;
+            ULARGE_INTEGER cbSize;
+            FILETIME mtime;
+            FILETIME ctime;
+            FILETIME atime;
+            DWORD grfMode;
+            DWORD grfLocksSupported;
+            CLSID clsid;
+            DWORD grfStateBits;
+            DWORD reserved;
+        } STATSTG;
+
+        typedef enum tagSTGTY
+        {
+            STGTY_STORAGE   = 1,
+            STGTY_STREAM    = 2,
+            STGTY_LOCKBYTES = 3,
+            STGTY_PROPERTY  = 4
+        } STGTY;
+
+        typedef enum tagSTREAM_SEEK
+        {
+            STREAM_SEEK_SET = 0,
+            STREAM_SEEK_CUR = 1,
+            STREAM_SEEK_END = 2
+        } STREAM_SEEK;
+
+        typedef enum tagLOCKTYPE
+        {
+            LOCK_WRITE      = 1,
+            LOCK_EXCLUSIVE  = 2,
+            LOCK_ONLYONCE   = 4
+        } LOCKTYPE;
+
+        HRESULT Seek(
+           [in] LARGE_INTEGER dlibMove,
+           [in] DWORD dwOrigin,
+           [out, retval] ULARGE_INTEGER *plibNewPosition);
+
+        HRESULT SetSize([in] ULARGE_INTEGER libNewSize);
+
+        HRESULT CopyTo([in] IStream *pstm,
+                       [in] ULARGE_INTEGER cb,
+                       [in, out] ULARGE_INTEGER *pcbRead,
+                       [in, out] ULARGE_INTEGER *pcbWritten);
+
+        HRESULT Commit([in] DWORD grfCommitFlags);
+
+        HRESULT Revert();
+
+        HRESULT LockRegion(
+            [in] ULARGE_INTEGER libOffset,
+            [in] ULARGE_INTEGER cb,
+            [in] DWORD dwLockType);
+
+        HRESULT UnlockRegion(
+            [in] ULARGE_INTEGER libOffset,
+            [in] ULARGE_INTEGER cb,
+            [in] DWORD dwLockType);
+
+        HRESULT Stat(
+            [in, out] STATSTG *pstatstg,
+            [in] DWORD grfStatFlag);
+
+        HRESULT Clone(
+            [out, retval] IStream **ppstm);
+
+    }
+
+    // IUnknown implementation
+    [
+        uuid(00000000-0000-0000-C000-000000000046),
+        helpstring("IUnknownVB Interface"),
+        odl
+    ]
+    interface IUnknownVB
+    {
+        HRESULT QueryInterface([in] REFIID priid,
+                               [in, out] VOID *ppvObject);
+
+        long AddRef();
+
+        long Release();
+
+    };
+
+
+
+}
+
+

@@ -1,0 +1,10 @@
+Version 1.04 (March 6, 2007)
+Fixed colors for Windows Themes
+===========================================================
+Version 1.03 (February 24, 2007)
+Amazon S3 support added
+Resizing added.
+===========================================================
+Version 1.00 (January 29, 2007)
+Initial release.
+===========================================================

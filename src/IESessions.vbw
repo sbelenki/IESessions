@@ -1,0 +1,11 @@
+Manager = 22, 22, 503, 481, 
+basGlobals = 66, 66, 547, 525, 
+PropsBag = 66, 66, 533, 509, 
+frmInputNewName = 0, 0, 501, 443, , 92, 153, 593, 596, C
+TreeNodeTag = 66, 66, 567, 509, C
+frmImportExport = 176, 176, 677, 619, , 110, 110, 611, 553, C
+frmConfigureAmazon = 132, 132, 645, 575, , 31, 15, 544, 458, C
+clsSHA = 22, 22, 535, 465, C
+clsAmazon = 110, 110, 623, 553, Z
+frmSaveLoad = 154, 154, 626, 597, , 6, 17, 580, 475, C
+frmProgress = 44, 44, 552, 487, , 176, 176, 648, 619, C

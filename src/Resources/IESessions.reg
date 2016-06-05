@@ -1,0 +1,14 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{6ECF15F0-468D-4E25-8997-1C710E80F5CD}]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Extensions\{32FF09D3-2F66-4814-AA2C-835D5D2BF0FD}]
+"MenuText"="IESessions"
+"CLSID"="{1FBA04EE-3024-11d2-8F1F-0000F87ABD16}"
+"ClsidExtension"="{6ECF15F0-468D-4E25-8997-1C710E80F5CD}"
+"MenuStatusBar"="Store Browser Sessions"
+"MenuText"="IESessions"
+"ButtonText"="IESessions"
+"HotIcon"="O:\\IESessions\\Export\\win32\\Release\\IESessions.dll,102"
+"Icon"="O:\\IESessions\\Export\\win32\\Release\\IESessions.dll,104"
+
